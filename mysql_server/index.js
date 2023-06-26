@@ -33,7 +33,24 @@ app.get('/', function(req, res){
 
 // localhost:3000/signup [get]
 app.get('/signup', function(req, res){
-    res.render('signup')
+    const data = req.query.result
+    console.log(data)
+    let output = 0
+    if(data){
+        output = data
+    }
+    res.render('signup', {
+        data : output
+    })
+    // if(data){
+    //     res.render('signup',{
+    //         data : data
+    //     })
+    // }else{
+    //     res.render('signup',{
+    //         data : 0
+    //     })
+    // }
 })
 
 // localhost:3000/signup2 [post]
@@ -151,17 +168,112 @@ app.post('/login', function(req, res){
                 []
                 */
                if(result.length == 0){
-                res.send('로그인 실패')
+                res.redirect("/")
                }else{
-                res.send('로그인 성공')
+                res.redirect('/board')
                }
             }
         }
     )
 })
 
+// localhost:3000/board [get]
+app.get('/board', function(req, res){
 
-// sever 실해
+    // sql 서버에 있는 board 테이블의 정보를 로드
+    sql = `
+                select
+                *
+                from
+                board
+    `
+    connection.query(
+        sql,
+        function(err, result){
+            if(err){
+                console.log(err)
+                res.sendStatus(err)
+            }else{
+                // result의 데이터 형태는 [{},{},.....]
+                res.render('board', {
+                    data : result
+                })
+            }
+        }
+    )
+})
+
+// localhost:3000/add_content
+app.get('/add_content', function(req, res){
+    res.render('add_content')
+})
+
+// localhost:3000/add_content2 [post]
+app.post('/add_content2', function(req, res){
+    const input_title = req.body._title
+    const input_content = req.body._content
+    console.log(input_title, input_content)
+
+    sql = `
+        insert
+        into
+        board(
+            title,
+            content
+        )
+        values (
+            ?, ?
+        )
+    `
+    const values =[input_title, input_content]
+    connection.query(
+        sql,
+        values,
+        function(err, result){
+            if(err){
+                console.log(err)
+                res.send(err)
+            }else{
+                console.log(result)
+                res.redirect('/board')
+            }
+        }
+    )
+})
+
+// localhost:3000/view_content [get]
+app.get("/view_content/:_no", function(req, res){
+    const input_no = req.params._no
+    console.log(input_no)
+
+    const sql = `
+                select
+                *
+                from
+                board
+                where
+                no = ?
+    `
+
+    const values = [input_no]
+
+    connection.query(
+        sql,
+        values,
+        function(err, result){
+            if(err){
+                console.log(err)
+                res.send(err)
+            }else{
+                res.render('view_content', {
+                    data : result[0]
+                })
+            }
+        }
+    )
+})
+
+// sever 실행
 const server = app.listen(port, function(){
     console.log('Server Start')
 })
