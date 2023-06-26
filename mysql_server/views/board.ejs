@@ -6,10 +6,10 @@
     <title>Document</title>
     <script>
         function add_content(){
-            location.href="/add_content"
+            location.href = "/add_content"
         }
         function view(no){
-            location.href="/view_content/"+no            
+            location.href = "/view_content/"+no
         }
     </script>
 </head>
@@ -18,26 +18,35 @@
     <!-- 글의 목록 -->
     <table border="1">
         <tr>
-            <th>글의 번호</th>
+            <th>글 번호</th>
             <th>글 제목</th>
         </tr>
-        <% for(var i = 0; i < data.length; i++){%>
-        <tr>
-            <td><%=data[i]['no']%></td>
-            <td onclick="view('<%=data[i].no%>')"><%=data[i]['title']%></td>
-        </tr>
+        <%for (var i = 0; i < data.length; i++){%>
+            <tr>
+                <td><%=data[i]['no']%></td>
+                <td onclick="view('<%=data[i].no%>')"><%=data[i]['title']%></td>
+            </tr>
         <%}%>
     </table>
 </body>
 </html>
-<!-- data 변수의 형태는 
-            [
-                {
-                    'no' : xx,
-                    'title' : xx,
-                    'content' : xx,
-                    'writer' : xx,
-                    'create_dt' : xx
-                }
-            ]
+
+<!-- 
+                data 변수의 형태 
+                [
+                    {
+                        'no' : 1, 
+                        'title' : test, 
+                        'content' : xxxxx, 
+                        'writer' : xxxx, 
+                        'create_dt' : xxxxx
+                    },
+                    {
+                        'no' : xx, 
+                        'title' : xxxxx, 
+                        'content' : xxxxx, 
+                        'writer' : xxxx, 
+                        'create_dt' : xxxxx
+                    }
+                ]
             -->
