@@ -17,6 +17,27 @@ app.use(express.urlencoded({extended : false}))
 //dotenv 설정
 require('dotenv').config()
 
+// express-session 모듈 로드
+const session = require('express-session')
+
+// session 설정
+app.use(
+    session(
+        {
+            secret : process.env.secret,
+            resave : false,
+            saveUninitialized : false,
+            cookie : {
+                maxAge : 60000 // 1000당 1초
+            }
+
+        }
+    )
+)
+
+const main = require('./routes/main.js')()
+app.use("/", main)
+
 const token = require('./routes/token.js')()
 app.use("/token", token)
 
